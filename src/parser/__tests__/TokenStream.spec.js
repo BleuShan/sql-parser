@@ -3,21 +3,21 @@ import {Token} from '../Token.js'
 
 describe('a TokenStream', () => {
   it.each`
-    statement           | expectedValues
-    ${'a test'}         | ${[Token.from('a'), Token.from('test')]}
-    ${'a test '}        | ${[Token.from('a'), Token.from('test')]}
-    ${'a  test  '}      | ${[Token.from('a'), Token.from('test')]}
-    ${' a test'}        | ${[Token.from('a'), Token.from('test')]}
-    ${'  a test'}       | ${[Token.from('a'), Token.from('test')]}
-    ${' a test  '}      | ${[Token.from('a'), Token.from('test')]}
-    ${' a    test  '}   | ${[Token.from('a'), Token.from('test')]}
-    ${' a\n    test  '} | ${[Token.from('a'), Token.from('test')]}
+    statement          | expectedValues
+    ${'a test'}        | ${[Token('a', {line: 1, column: 1}), Token('test', {line: 1, column: 3})]}
+    ${'a test '}       | ${[Token('a', {line: 1, column: 1}), Token('test', {line: 1, column: 3})]}
+    ${'a  test  '}     | ${[Token('a', {line: 1, column: 1}), Token('test', {line: 1, column: 4})]}
+    ${' a test'}       | ${[Token('a', {line: 1, column: 2}), Token('test', {line: 1, column: 4})]}
+    ${'  a test'}      | ${[Token('a', {line: 1, column: 3}), Token('test', {line: 1, column: 5})]}
+    ${' a test  '}     | ${[Token('a', {line: 1, column: 2}), Token('test', {line: 1, column: 4})]}
+    ${' a \ntest  '}   | ${[Token('a', {line: 1, column: 2}), Token('test', {line: 2, column: 1})]}
+    ${' a \r\ntest  '} | ${[Token('a', {line: 1, column: 2}), Token('test', {line: 2, column: 1})]}
   `(
     `should yield $expectedValues when created from '$statement'`,
     ({statement, expectedValues}) => {
       const stream = TokenStream.from(statement)
 
-      expect(Array.from(stream).toString()).toEqual(expectedValues.toString())
+      expect(Array.from(stream)).toEqual(expectedValues)
     }
   )
 

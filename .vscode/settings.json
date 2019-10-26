@@ -1,4 +1,3 @@
 {
-  "eslint.nodePath": ".vscode/pnpify",
-  "jest.pathToJest": "yarn test"
+  "eslint.nodePath": ".vscode/pnpify"
 }
