@@ -1,0 +1,36 @@
+{
+  "name": "sql-parser",
+  "version": "0.1.0",
+  "description": "sql parsing lib",
+  "main": "index.js",
+  "author": "Philippe Lafontaine <lafontaine.philippe@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "core-js": "^3.3.4",
+    "regenerator-runtime": "^0.13.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@bleushan/babel-preset-env": "^3.0.0",
+    "@bleushan/eslint-config": "^2.0.0",
+    "@yarnpkg/pnpify": "^2.0.0-rc.7",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-import-resolver-node": "^0.3.2",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.20.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^24.9.0",
+    "jest-chain": "^1.1.2",
+    "jest-extended": "^0.11.2",
+    "prettier": "^1.18.2"
+  }
+}
