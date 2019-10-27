@@ -1,29 +1,37 @@
 /**
+ * The positionnal data of a {@link TokenValue} within the original text
+ *
+ * @typedef TokenValuePosition
+ * @property {number} line
+ *  the line number where to find the {@link TokenValue}
+ *
+ * @property {number} column
+ *  the column number where the {@link TokenValue} starts
+ *
+ * @property {number} span
+ *  the length of textual representation of {@link TokenValue}
+ */
+
+/**
  * the Factory of TokenValue
  *
- * @param {string} rawValue
+ * @param {string} text
  *  The raw string value
  *
  * @param {TokenValuePosition} position
  *  The position data of the token in the sourceText
  */
-export function Token(textContent, position) {
-  return new TokenValue(textContent, position)
+export function Token(text, position) {
+  return new TokenValue(text, position)
 }
 
 /**
- * A value type used to represent text content
- * that's gone through the tokenization process
+ * A value type used to represent text content that's gone through some tokenization process
  */
 export class TokenValue {
   /**
-   * The positionnal data of the text content within the original
-   * text
+   * The positionnal data of the text content within the original text
    * @type {TokenValuePosition}
-   *
-   * @typedef TokenValuePosition
-   * @property {number} line
-   * @property {number} column
    */
   position
 
@@ -31,16 +39,16 @@ export class TokenValue {
    * The tokenized text content
    * @type {string}
    */
-  textContent
+  text
 
   /**
    * @inheritdoc
-   * @param {string} textContent
+   * @param {string} text
    * @param {TokenValuePosition} position
    */
-  constructor(textContent, position) {
+  constructor(text, position) {
     this.position = position
-    this.textContent = textContent
+    this.text = text
   }
 
   get [Symbol.toStringTag]() {
@@ -49,9 +57,9 @@ export class TokenValue {
 
   /**
    * Converts into its textual represention.
-   * @returns {string} the value of the {@link TokenValue#textContent} property
+   * @returns {string} the value of the {@link TokenValue#text} property
    */
   toString() {
-    return this.textContent
+    return this.text
   }
 }

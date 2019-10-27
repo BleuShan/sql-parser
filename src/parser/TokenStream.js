@@ -1,4 +1,4 @@
-import {TokenGenerator} from './TokenGenerator.js'
+import {tokenize} from './Tokenizer.js'
 
 /**
  * A stream of token value extracted from a textual source
@@ -10,6 +10,8 @@ export class TokenStream {
    *
    * @param {string} source
    * The textual value from which {@link TokenStream} will extract its values
+   *
+   * @returns {TokenStream} a new {@link TokenStream} instance
    */
   static from(source) {
     return new this(source)
@@ -23,7 +25,7 @@ export class TokenStream {
 
   [Symbol.iterator]() {
     if (this.#iterator == null) {
-      this.#iterator = TokenGenerator(this.#source)
+      this.#iterator = tokenize(this.#source)
     }
 
     return this.#iterator
@@ -31,10 +33,13 @@ export class TokenStream {
 
   /**
    * Resets the stream iterator to the start of the source text
-   * @returns {this} the token stream instance from which it was called
+   * @returns {this} the {@link TokenStream} instance from which it was called
    */
   reset() {
-    this.#iterator = null
+    if (this.#iterator != null) {
+      this.#iterator.reset()
+    }
+
     return this
   }
 }
