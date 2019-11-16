@@ -3,11 +3,11 @@ import {ASTNode} from './Node.js'
 export class ASTBuilder {
   #root
 
-  addToken(token) {
+  add(token) {
     const node = ASTNode.from(token)
 
     if (this.#root) {
-      this.#root.attach(node)
+      this.#root.link(node)
     } else {
       this.#root = node
     }

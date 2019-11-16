@@ -35,14 +35,45 @@ describe('a TokenStream', () => {
       ' a \r\ntest  ',
       [Token('a', {line: 1, column: 2, span: 1}), Token('test', {line: 2, column: 1, span: 4})]
     ]
-  ])(`created from '%s' should yield '%p'`, (statement, expectedValues) => {
+  ])(`created from '%s' should yield '%o'`, (statement, expectedValues) => {
     const stream = TokenStream.from(statement)
 
     expect(Array.from(stream)).toEqual(expectedValues)
   })
 
+  describe('values', () => {
+    let stream
+    const statement = `Hello!\nHello World!`
+
+    beforeEach(() => {
+      stream = TokenStream.from(statement)
+    })
+
+    it('should have enough information to approximate the original text', () => {
+      let previousPosition
+      let result = ''
+      for (const value of stream) {
+        const {position} = value
+        if (previousPosition != null) {
+          if (previousPosition.line < position.line) {
+            result += '\n'
+          }
+          const spaceCount = position.column - previousPosition.column - previousPosition.span
+          for (let i = 0; i < spaceCount; i++) {
+            result += ' '
+          }
+        }
+        result = `${result}${value}`
+        previousPosition = position
+      }
+
+      expect(result).toEqual(statement)
+    })
+  })
+
   describe('iterator', () => {
     const stream = TokenStream.from('a b c d')
+    const expectedValues = ['a', 'b', 'c', 'd']
     beforeEach(() => {
       stream.reset()
     })
@@ -61,13 +92,22 @@ describe('a TokenStream', () => {
           break
         }
       }
-      expect(result).toEqual(['a', 'b'])
+      expect(result).toEqual(expectedValues.slice(0, 2))
 
       for (const value of stream) {
         result.push(value.text)
       }
 
-      expect(result).toEqual(['a', 'b', 'c', 'd'])
+      expect(result).toEqual(expectedValues)
+    })
+
+    it('should allow reuse', () => {
+      const result = []
+      for (const value of stream) {
+        result.push(value.text)
+      }
+
+      expect(result).toEqual(expectedValues)
     })
   })
 })

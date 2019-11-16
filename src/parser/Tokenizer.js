@@ -3,8 +3,6 @@ import {WHITESPACE_REGEX, LINE_FEED} from './constants.js'
 // eslint-disable-next-line no-unused-vars
 import {Token} from './Token.js'
 
-const isArray = Array.isArray
-
 /**
  * Lazily transforms some text content into a set of {@link TokenValue}
  * @param {string} source the text content to process
@@ -31,8 +29,7 @@ export class TokenizingIterator {
 
   #memoized = {
     buffer: '',
-    results: [],
-    sourceIndex: -1
+    results: []
   }
 
   /**
@@ -41,7 +38,7 @@ export class TokenizingIterator {
    */
   get done() {
     const {index} = this.#position
-    const source = isArray(this.#memoized) ? this.#memoized : this.#source
+    const source = this.#hasCompleted ? this.#memoized.results : this.#source
     return index > source.length
   }
 
@@ -50,12 +47,6 @@ export class TokenizingIterator {
    * @type {TokenValue}
    */
   get value() {
-    if (isArray(this.#memoized)) {
-      const {index} = this.#position
-      const targetIndex = Math.min(index, this.#memoized.length - 1)
-      this.#value = this.#memoized[targetIndex]
-    }
-
     return this.#value
   }
 
@@ -72,15 +63,13 @@ export class TokenizingIterator {
    * @returns {this} the {@link TokenizingIterator} instance from which it was called
    */
   next() {
-    if (isArray(this.#memoized)) {
-      return this.#updatePosition()
+    if (this.#hasCompleted) {
+      return this.#updateValue()
     }
 
     this.#value = null
     while (!this.done) {
-      const {index} = this.#position
-
-      this.#updatePosition().#updateValue(index)
+      this.#updateValue()
 
       if (this.value != null) {
         break
@@ -88,7 +77,11 @@ export class TokenizingIterator {
     }
 
     if (this.done) {
-      this.#memoized = this.#memoized.results
+      this.#hasCompleted = true
+      const {results} = this.#memoized
+      this.#memoized = {
+        results
+      }
       this.#value = undefined
     }
 
@@ -111,7 +104,7 @@ export class TokenizingIterator {
   #updatePosition() {
     this.#position.index += 1
 
-    if (isArray(this.#memoized)) {
+    if (this.#hasCompleted) {
       return this
     }
 
@@ -127,12 +120,13 @@ export class TokenizingIterator {
   }
 
   // eslint-disable-next-line no-undef
-  #updateValue(index) {
-    if (isArray(this.#memoized)) {
+  #updateValue() {
+    const {index, line} = this.#position
+    let {buffer, results} = this.#updatePosition().#memoized
+    if (this.#hasCompleted) {
+      this.#value = results[index]
       return this
     }
-
-    let {buffer, results, sourceIndex} = this.#memoized
 
     const current = this.#source[index]
     const next = this.#source[index + 1]
@@ -146,7 +140,7 @@ export class TokenizingIterator {
     }
 
     if (buffer && (WHITESPACE_REGEX.test(next) || !next)) {
-      const {line, column} = this.#position
+      const {column} = this.#position
       const {length: span} = buffer
       this.#value = Token(buffer, {
         line,
@@ -155,12 +149,10 @@ export class TokenizingIterator {
       })
 
       results.push(this.#value)
-      sourceIndex = index
       buffer = ''
       this.#memoized = {
         results,
-        buffer,
-        sourceIndex
+        buffer
       }
     }
 

@@ -4,17 +4,17 @@ export class ASTNode {
   }
 
   static from(token) {
-    return new this()
+    return new this(token)
   }
 
-  attach(node) {
-    if (this.child == null) {
-      this.child = node
-      node.parent = this
+  link(node) {
+    if (this.next == null) {
+      this.next = node
+      node.previous = this
 
       return node
     }
 
-    return this.child.attach(node)
+    return this.next.link(node)
   }
 }
