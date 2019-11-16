@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import {WHITESPACE_REGEX, LINE_FEED} from './constants.js'
+// eslint-disable-next-line no-unused-vars
 import {Token} from './Token.js'
 
 const isArray = Array.isArray
@@ -105,7 +107,8 @@ export class TokenizingIterator {
     return this
   }
 
-  #updatePosition = function updatePosition() {
+  // eslint-disable-next-line no-undef
+  #updatePosition() {
     this.#position.index += 1
 
     if (isArray(this.#memoized)) {
@@ -123,7 +126,8 @@ export class TokenizingIterator {
     return this
   }
 
-  #updateValue = function updateValue(index) {
+  // eslint-disable-next-line no-undef
+  #updateValue(index) {
     if (isArray(this.#memoized)) {
       return this
     }
